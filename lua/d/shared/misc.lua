@@ -52,7 +52,9 @@ function PROVIDER:Insert(Table, Values, cb)
     end
 
     colums, values = colums .. ' )', values .. ' )'
-    self:Query('INSERT INTO ' .. Table .. colums .. ' VALUES ' .. values .. ';', cb, true)
+    self:Query('INSERT INTO ' .. Table .. colums .. ' VALUES ' .. values .. ';', function(a)
+        if not a.status then return cb(nil) else cb(a.insertID) end
+    end)
 end
 
 function PROVIDER:Select(Columns, Table, cb, Where)

@@ -17,7 +17,6 @@ function PROVIDER:config(sqConf)
     function self.db:onConnected()
         self:setCharacterSet('UTF8')
         sf:Log('[gLib] [MySQL]: Successful connected to (' .. sqConf.host .. ':' .. sqConf.port .. ')', true)
-
         hook.Run('gLibProviderConnected', self)
     end
 
@@ -47,14 +46,17 @@ function PROVIDER:Query(str, cb)
     end
 
     local r = self.db:query(str)
-    local stype = str:lower():match'select' or str:lower():match'show'
 
     function r:onSuccess(result)
-        cb(stype and (result or {}) or self:lastInsert() or true)
+        cb({
+            status = true,
+            insertID = self:lastInsert(),
+            data = result or {}
+        })
     end
 
     function r:onError(err, str)
-        sf:Log('[Error]: ' .. err .. '\n\t' .. str , true, true)
+        sf:Log('[Error]: ' .. err .. '\n\t' .. str, true, true)
 
         if not sf:Connected() then
             sf.db:connect()
@@ -62,14 +64,13 @@ function PROVIDER:Query(str, cb)
 
             if not sf:Connected() then
                 sf:Log('[Error]: Re-connection to database server failed.', true, true)
-                cb(false)
 
                 return
             end
 
             self:start()
         end
-
+        cb({status = false})
         sf:Log('[MySQL]: Query Failed: ' .. err .. ' (' .. str .. ')', false, true)
     end
 
@@ -82,7 +83,7 @@ function PROVIDER:Transaction(SQLtbl, cb)
 
     if self.Config.DEBUG then
         self:Log('Starting transaction:\n>>>>>>>>>>>>>>\n' .. table.concat(SQLtbl, ',\n') .. '\n<<<<<<<<<<<<<<')
-    end 
+    end
 
     local Trs = self.db:createTransaction()
 
@@ -92,7 +93,9 @@ function PROVIDER:Transaction(SQLtbl, cb)
     end
 
     function Trs:onSuccess()
-        cb(true)
+        cb({
+            status = true
+        })
     end
 
     function Trs:onError(err)
@@ -104,10 +107,10 @@ function PROVIDER:Transaction(SQLtbl, cb)
 
             if not sf:Connected() then
                 sf:Log('[Error]: Re-connection to database server failed.', true, true)
-                cb(false)
 
                 return
             end
+
             self:start()
         end
     end
@@ -117,7 +120,7 @@ end
 
 function PROVIDER:TableExists(str, cb)
     self:Query('SHOW TABLES LIKE \'' .. str .. '\';', function(a)
-        if #a > 0 then
+        if #a.data > 0 then
             cb(true)
         else
             cb(false)
