@@ -2,7 +2,8 @@ gLib.SQL = gLib.SQL or {}
 gLib.SQL.Config = gLib.SQL.Config or {}
 local cfg = gLib.SQL.Config
 
-cfg.DataStore = 'sqlite' -- mysql || sqlite
+cfg.DEBUG = false
+cfg.DataStore = 'mysql' -- mysql || sqlite
 
 cfg.srv = {
     host = 'localhost',

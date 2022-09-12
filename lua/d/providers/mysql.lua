@@ -42,7 +42,7 @@ function PROVIDER:Query(str, cb)
     cb = cb or function() end
     local sf = self
 
-    if self.DEBUG then
+    if self.Config.DEBUG then
         self:Log('Starting query: ' .. str)
     end
 
@@ -54,7 +54,7 @@ function PROVIDER:Query(str, cb)
     end
 
     function r:onError(err, str)
-        sf:Log('[Error]: ' .. err, true, true)
+        sf:Log('[Error]: ' .. err .. '\n\t' .. str , true, true)
 
         if not sf:Connected() then
             sf.db:connect()
@@ -80,7 +80,7 @@ function PROVIDER:Transaction(SQLtbl, cb)
     cb = cb or function() end
     local sf = self
 
-    if self.DEBUG then
+    if self.Config.DEBUG then
         self:Log('Starting transaction:\n>>>>>>>>>>>>>>\n' .. table.concat(SQLtbl, ',\n') .. '\n<<<<<<<<<<<<<<')
     end 
 
@@ -96,7 +96,7 @@ function PROVIDER:Transaction(SQLtbl, cb)
     end
 
     function Trs:onError(err)
-        sf:Log('[Error]: ' .. err, true, true)
+        sf:Log('[Error]: ' .. err .. '\n\t' .. table.concat(SQLtbl, ',\n\t'), true, true)
 
         if not sf:Connected() then
             sf.db:connect()
@@ -108,9 +108,8 @@ function PROVIDER:Transaction(SQLtbl, cb)
 
                 return
             end
+            self:start()
         end
-
-        self:start()
     end
 
     Trs:start()

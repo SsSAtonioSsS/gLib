@@ -20,14 +20,15 @@ end
 function PROVIDER:Query(str, cb, t)
     cb = cb or function() end
 
-    if self.DEBUG then
+    if self.Config.DEBUG then
         self:Log('Starting query: ' .. str)
     end
+
     local stype = str:lower():match'select'
     local r = sql.Query(str)
 
     if r == false then
-        self:Log('[Error]: ' .. sql.LastError(), true, true)
+        self:Log('[Error]: ' .. sql.LastError() .. '\n' .. str, true, true)
 
         cb(false)
         return
@@ -47,7 +48,7 @@ end
 function PROVIDER:Transaction(SQLtbl, cb)
     cb = cb or function() end
 
-    if self.DEBUG then
+    if self.Config.DEBUG then
         self:Log('Starting transaction:\n>>>>>>>>>>>>>>\n' .. table.concat(SQLtbl, ',\n') .. '\n<<<<<<<<<<<<<<')
     end
 

@@ -1,14 +1,13 @@
-gLib.SQL.DEBUG = true
 include('sv_init.lua')
 
 function gLib.SQL:Log(text, ServerLog, err)
-    local dir = 'gLib/' .. self.Config.DataStore
+    local dir = 'gLib'
 
     if not file.IsDir(dir, "DATA") then
         file.CreateDir(dir)
     end
 
-    local filename = not err and 'sql_logs_' .. os.date('%d-%m-%Y') .. '.txt' or 'sql_logs_errors_' .. os.date('%d-%m-%Y') .. '.txt'
+    local filename = not err and self.Config.DataStore .. '_logs_' .. os.date('%d-%m-%Y') .. '.txt' or self.Config.DataStore .. '_logs_errors_' .. os.date('%d-%m-%Y') .. '.txt'
 
     if ServerLog then
         local s = '[gLib] ' .. text
