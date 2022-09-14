@@ -17,8 +17,9 @@ function gLib:NewConnetion(provider, debug, tb)
     new.DEBUG = debug or false
     hook.Run('gLibCreateNewConnection', new)
     new:config(tb)
-    new:connect()
     return new
 end
 
-hook.Run('gLibInitilize', gLib)
+hook.Add('Initialize', 'loadGlibFiles', function()
+    hook.Run('gLibInitilize', gLib)
+end)
