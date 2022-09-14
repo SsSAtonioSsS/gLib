@@ -39,9 +39,11 @@ function PROVIDER:Query(str, cb)
         return
     end
 
+    local ins = sql.Query('SELECT last_insert_rowid() as row;')
+    ins = #ins > 0 and tonumber(ins[1].row) or nil
     cb({
         status = true,
-        insertID = sql.Query('SELECT last_insert_rowid() as row;'),
+        insertID = ins,
         data = r or {}
     })
 
