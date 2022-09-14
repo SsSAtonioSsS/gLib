@@ -64,6 +64,7 @@ function PROVIDER:Update(Table, Set, Where, cb)
 end
 
 function PROVIDER:Insert(Table, Values, cb)
+    cb = cb or function() end
     if table.Count(Values) <= 0 then return end
     local colums, values, first = '', '', false
 
