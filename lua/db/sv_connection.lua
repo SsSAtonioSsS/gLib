@@ -1,4 +1,4 @@
-gLib.DB = gLib.DB or {}
+--[[gLib.DB = gLib.DB or {}
 
 hook.Add('gLibInitilize', 'addConnection', function(self)
     local provider = 'mysql' -- 'sqlite'
@@ -12,6 +12,6 @@ hook.Add('gLibInitilize', 'addConnection', function(self)
         socket = ''
     }
 
-    --gLib.DB.YourName = self:NewConnetion(provider, nil, connect)
-    --gLib.DB.YourName:connect()
-end)
+    gLib.DB.YourName = self:NewConnetion(provider, nil, connect)
+    gLib.DB.YourName:connect()
+end)]]
