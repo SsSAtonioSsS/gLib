@@ -3,7 +3,7 @@ MySQL based on MySQLOO FredyH.
 SQLite based on native Garry's Mod SQLite v3.26.0.
 -
 For creating new connection use method:
-```
+```lua
   gLib:NewConnection(provider, debug, {host = 'localhost', user = 'root', pwd = '123', db = 'local', port = 3306, socket = ''}
 ```
 
@@ -28,7 +28,7 @@ end)
 ```
 
 Listening new connetion on success:
-```
+```lua
   hook.Add('gLibProviderConnected', randomname, function(self)
     if self.ConnectionName == SOMENAME.ConnectionName then
         -- Your code
