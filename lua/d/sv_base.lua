@@ -1,35 +1,24 @@
-include('sv_init.lua')
+include('init.lua')
 
-function gLib.SQL:Log(text, ServerLog, err)
-    local dir = 'gLib'
+function gLib:NewConnetion(provider, debug, tb)
 
-    if not file.IsDir(dir, "DATA") then
-        file.CreateDir(dir)
-    end
+    tb = tb or {}
+    tb.host = tb.host or 'localhost'
+    tb.user = tb.user or 'root'
+    tb.pwd = tb.pwd or ''
+    tb.db = tb.db or ''
+    tb.port = tb.port or 3306
+    tb.socket = tb.socket or ''
+    tb.connection = tb.connection or (tb.host .. '_' .. tb.user  .. '_' .. tb.db)
 
-    local filename = not err and self.Config.DataStore .. '_logs_' .. os.date('%d-%m-%Y') .. '.txt' or self.Config.DataStore .. '_logs_errors_' .. os.date('%d-%m-%Y') .. '.txt'
-
-    if ServerLog then
-        local s = '[gLib] ' .. text
-
-        if err then
-            ErrorNoHalt(s .. '\n')
-        else
-            print(s)
-        end
-    end
-
-    if not file.Exists(dir .. '/' .. filename, 'DATA') then
-        file.Write(dir .. '/' .. filename, '')
-    end
-
-    file.Append(dir .. '/' .. filename, os.date('[%X]') .. ' ' .. text .. '\r\n')
+    local Pvtbl = self:IncludeProvider(provider)
+    local new = table.Copy(Pvtbl)
+    new.ConnectionName = tb.connection
+    new.DEBUG = debug or false
+    hook.Run('gLibCreateNewConnection', new)
+    new:config(tb)
+    new:connect()
+    return new
 end
 
-hook.Add('Initialize', 'LoadgLibProvider', function()
-    gLib.SQL:Initialize()
-end)
--- hook.Run('gLibProviderLoaded', self) << When data provider loaded
--- hook.Run('gLibProviderFailed', path) << When data provider failed
--- hook.Run('gLibProviderConnected', self)
--- hook.Run('gLibProviderDisConnected', self)
+hook.Run('gLibInitilize', gLib)

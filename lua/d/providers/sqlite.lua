@@ -7,6 +7,7 @@ function PROVIDER.config(_)
 end
 
 function PROVIDER:connect()
+    self:Log('[SQLite]: Initilized!')
     hook.Run('gLibProviderConnected', self)
 
     return true
@@ -23,7 +24,7 @@ end
 function PROVIDER:Query(str, cb)
     cb = cb or function() end
 
-    if self.Config.DEBUG then
+    if self.DEBUG then
         self:Log('Starting query: ' .. str)
     end
 
@@ -51,7 +52,7 @@ end
 function PROVIDER:Transaction(SQLtbl, cb)
     cb = cb or function() end
 
-    if self.Config.DEBUG then
+    if self.DEBUG then
         self:Log('Starting transaction:\n>>>>>>>>>>>>>>\n' .. table.concat(SQLtbl, ',\n') .. '\n<<<<<<<<<<<<<<')
     end
 

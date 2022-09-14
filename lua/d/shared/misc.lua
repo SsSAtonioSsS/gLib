@@ -1,3 +1,29 @@
+function PROVIDER:Log(text, ServerLog, err)
+    local dir = 'gLib/' .. self.ConnectionName
+
+    if not file.IsDir(dir, "DATA") then
+        file.CreateDir(dir)
+    end
+
+    local filename = not err and self.ID .. '_logs_' .. os.date('%d-%m-%Y') .. '.txt' or self.ID .. '_logs_errors_' .. os.date('%d-%m-%Y') .. '.txt'
+
+    if ServerLog then
+        local s = '[gLib] ' .. text
+
+        if err then
+            ErrorNoHalt(s .. '\n')
+        else
+            print(s)
+        end
+    end
+
+    if not file.Exists(dir .. '/' .. filename, 'DATA') then
+        file.Write(dir .. '/' .. filename, '')
+    end
+
+    file.Append(dir .. '/' .. filename, os.date('[%X]') .. ' ' .. text .. '\r\n')
+end
+
 function PROVIDER:where(tbl)
     Where = ''
     first = false

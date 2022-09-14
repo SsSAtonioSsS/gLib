@@ -16,12 +16,12 @@ function PROVIDER:config(sqConf)
 
     function self.db:onConnected()
         self:setCharacterSet('UTF8')
-        sf:Log('[gLib] [MySQL]: Successful connected to (' .. sqConf.host .. ':' .. sqConf.port .. ')', true)
-        hook.Run('gLibProviderConnected', self)
+        sf:Log('[MySQL]: Successful connected to (' .. sqConf.host .. ':' .. sqConf.port .. ') at ' .. sqConf.connection .. '!', true)
+        hook.Run('gLibProviderConnected', sf)
     end
 
     function self.db:onConnectionFailed(er)
-        sf:Log('[gLib] [MySQL]: Connection Failed, error: ' .. er, true, true)
+        sf:Log('[MySQL]: Connection Failed, error: ' .. er, true, true)
     end
 end
 
@@ -41,7 +41,7 @@ function PROVIDER:Query(str, cb)
     cb = cb or function() end
     local sf = self
 
-    if self.Config.DEBUG then
+    if self.DEBUG then
         self:Log('Starting query: ' .. str)
     end
 
@@ -81,7 +81,7 @@ function PROVIDER:Transaction(SQLtbl, cb)
     cb = cb or function() end
     local sf = self
 
-    if self.Config.DEBUG then
+    if self.DEBUG then
         self:Log('Starting transaction:\n>>>>>>>>>>>>>>\n' .. table.concat(SQLtbl, ',\n') .. '\n<<<<<<<<<<<<<<')
     end
 
