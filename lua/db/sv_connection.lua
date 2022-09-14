@@ -13,10 +13,5 @@ hook.Add('gLibInitilize', 'addConnection', function(self)
     }
 
     --gLib.DB.YourName = self:NewConnetion(provider, nil, connect)
+    --gLib.DB.YourName:connect()
 end)
-
----- YOLO DONATE CONNECTION ----
-local yoloConnect = 'config/yolo_connect.lua'
-if file.Exists(yoloConnect, 'LUA') then
-    include(yoloConnect)
-end
