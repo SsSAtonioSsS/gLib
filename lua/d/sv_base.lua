@@ -19,6 +19,23 @@ function gLib:NewConnetion(provider, debug, tb)
     return new
 end
 
+local function CheckVersion()
+    http.Fetch(gLib.branch .. 'data/build.json', function(a, _, _, c)
+        if c ~= 200 then return end
+        a = util.JSONToTable(a)
+        local remote = a.glib.version
+        if remote > gLib.version then
+            print([[
+                -----------------------------------------
+                [gLib] Version is outdated.
+                Download the new version from:
+                https://github.com/SsSAtonioSsS/glib!
+                -----------------------------------------
+            ]])
+        end
+    end)
+end
 hook.Add('Initialize', 'loadGlibFiles', function()
+    CheckVersion()
     hook.Run('gLibInitilize', gLib)
 end)
